@@ -10,3 +10,5 @@
 | **Gesamtpunkte**         |         | 8.45         | 9.7     | 9.9    |
 
 **Legende:** 10 = sehr gut, 1 = sehr schlecht
+
+test
