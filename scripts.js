@@ -22,55 +22,82 @@ bgOverlay.style.backgroundRepeat = 'no-repeat';
 bgOverlay.style.backgroundAttachment = 'fixed';
 document.body.prepend(bgOverlay);
 
-// Set initial background
-const bgImages = {
+function isDesktop() {
+  return window.matchMedia('(min-width: 1024px)').matches;
+}
+
+const desktopBgImages = {
   about: 'img/about_me.jpg',
   experience: 'img/experience.webp',
   skills: 'img/Skills.webp',
   projects: 'img/projects.webp',
   'link-tree': 'img/link_tree.jpeg'
 };
-let currentBg = 'about';
-bgOverlay.style.backgroundImage = `url('${bgImages[currentBg]}')`;
+
+function setBgForTab(tabId) {
+  if (isDesktop()) {
+    bgOverlay.style.backgroundImage = `url('${desktopBgImages[tabId] || desktopBgImages['about']}')`;
+  } else {
+    bgOverlay.style.backgroundImage = `url('img/link_tree.jpeg')`;
+  }
+}
+
+// Set initial background
+setBgForTab('about');
 bgOverlay.style.opacity = '1';
+
+function animateTabChange(oldSection, newSection, tabId) {
+  if (isDesktop()) {
+    // Desktop: animated slide/fade and background fade
+    oldSection.style.transition = 'opacity 350ms, transform 350ms';
+    oldSection.style.opacity = '0';
+    oldSection.style.transform = 'translateY(40px)';
+    bgOverlay.style.transition = 'opacity 350ms';
+    bgOverlay.style.opacity = '0';
+    setTimeout(() => {
+      oldSection.classList.remove('active');
+      newSection.classList.add('active');
+      newSection.style.transition = 'none';
+      newSection.style.opacity = '0';
+      newSection.style.transform = 'translateY(40px)';
+      setBgForTab(tabId);
+      bgOverlay.style.opacity = '1';
+      // Force reflow
+      void newSection.offsetWidth;
+      newSection.style.transition = 'opacity 350ms, transform 350ms';
+      newSection.style.opacity = '1';
+      newSection.style.transform = 'translateY(0)';
+    }, 350);
+  } else {
+    // Mobile: no animation, always link_tree.jpeg
+    oldSection.classList.remove('active');
+    newSection.classList.add('active');
+    newSection.style.opacity = '1';
+    setBgForTab(tabId);
+    bgOverlay.style.opacity = '1';
+  }
+}
 
 tabs.forEach(tab => {
   tab.addEventListener('click', e => {
     e.preventDefault();
-
     tabs.forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
-
     const targetId = tab.getAttribute('href').slice(1);
     const newSection = Array.from(sections).find(sec => sec.id === targetId);
     const oldSection = Array.from(sections).find(sec => sec.classList.contains('active'));
-
     if (oldSection !== newSection) {
-      // Slide up effect: fade out and slide down old, then slide up and fade in new
-      oldSection.style.transition = 'opacity 350ms, transform 350ms';
-      oldSection.style.opacity = '0';
-      oldSection.style.transform = 'translateY(40px)';
-      setTimeout(() => {
-        oldSection.classList.remove('active');
-        newSection.classList.add('active');
-        newSection.style.transition = 'none';
-        newSection.style.opacity = '0';
-        newSection.style.transform = 'translateY(40px)';
-        // Force reflow
-        void newSection.offsetWidth;
-        newSection.style.transition = 'opacity 350ms, transform 350ms';
-        newSection.style.opacity = '1';
-        newSection.style.transform = 'translateY(0)';
-      }, 350);
+      animateTabChange(oldSection, newSection, targetId);
+    } else {
+      setBgForTab(targetId);
     }
-
-    // Instantly change background image
-    if (bgImages[targetId] && targetId !== currentBg) {
-      bgOverlay.style.opacity = '1';
-      bgOverlay.style.backgroundImage = `url('${bgImages[targetId]}')`;
-      currentBg = targetId;
-    }
-
     document.body.style.backgroundImage = '';
   });
+});
+
+// Update background on resize
+window.addEventListener('resize', () => {
+  const activeTab = document.querySelector('.tabs__list a.active');
+  const tabId = activeTab ? activeTab.getAttribute('href').slice(1) : 'about';
+  setBgForTab(tabId);
 });
