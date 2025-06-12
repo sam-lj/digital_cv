@@ -14,6 +14,7 @@
   box-sizing: border-box;
 }
 body {
+  overflow-x: hidden;
   font-family: "Segoe UI", sans-serif;
   color: #f3f3f3;
   line-height: 1.5;
@@ -234,8 +235,22 @@ padding: 0.5rem;
   }
   
   .tabs__list {
+    flex-wrap: nowrap; /* keep items in a single line */
+    overflow-x: auto;
+    min-width: max-content; /* ensures children don’t wrap */
+    width: 100%;
+    padding-bottom: 2px;
     gap: 0.5rem;
     font-size: 0.95rem;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    min-width: 80px;
+    text-align: center;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .tabs__list::-webkit-scrollbar {
+  display: none;
   }
   
   .banner {
@@ -245,6 +260,8 @@ padding: 0.5rem;
   }
   
   .tabs {
+    overflow-x: auto; /* allow horizontal scroll if needed */
+    -webkit-overflow-scrolling: touch;
     height: 2rem;
     font-size: 0.95rem;
   }
