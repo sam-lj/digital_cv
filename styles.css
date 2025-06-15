@@ -52,7 +52,7 @@ body > * {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: var(--banner-h);
-  background: #73079e;
+  background: #2e8b57;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -148,7 +148,7 @@ main ul {
   border-collapse: separate;
   border-spacing: 0 0.3rem;
   margin-bottom: 1rem;
-  border: 3px solid #4b2673;
+  border: 3px solid #2e8b57;
   border-radius: 0.5rem;
   overflow: hidden;
   position: relative;
@@ -182,7 +182,7 @@ main ul {
 }
 .info-table th {
   background: transparent;
-  color: #a259e6;
+  color: #2e8b57;
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: 0.03em;
